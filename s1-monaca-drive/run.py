@@ -1,3 +1,4 @@
+# coding=UTF-8
 import time
 import json
 import random
@@ -34,7 +35,7 @@ def to_follow(user_id, retry = False):
     driver.get(domain + user_id)
     time.sleep(my_random(8, 18))
     try: 
-        fo_button = driver.find_element_by_xpath('/html/body/div[1]/div/div/section[2]/div/div/div/div[3]/div[1]/div[4]/div[2]')
+        fo_button = driver.find_element_by_class_name('follow-button')
         fo_button_text = fo_button.text.strip().lower()
         if fo_button_text == "unfollow":
             print(f'- [DEV] [{user_id}] 已经 follow，无需其他操作')
