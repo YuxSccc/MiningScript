@@ -34,7 +34,7 @@ def to_follow(user_id, retry = False):
     driver.get(domain + user_id)
     time.sleep(my_random(8, 18))
     try: 
-        fo_button = driver.find_element_by_xpath('/html/body/div[1]/div/div/section[2]/div/div/div/div[3]/div[1]/div[4]/div[2]')
+        fo_button = driver.find_element_by_xpath('/html/body/div[1]/div/div/section[2]/div/div/div/div[3]/div[1]/div[3]/div[2]')
         fo_button_text = fo_button.text.strip().lower()
         if fo_button_text == "unfollow":
             print(f'- [DEV] [{user_id}] 已经 follow，无需其他操作')
@@ -78,7 +78,7 @@ def main():
     task_que = Queue()
 
     # 初始化队列
-    st_user = "jxj_nft"
+    st_user = "heoldwet"
     task_que.put(st_user)
 
     while task_que.qsize() > 0:
