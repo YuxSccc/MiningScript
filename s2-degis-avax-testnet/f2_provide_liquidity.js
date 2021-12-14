@@ -1,16 +1,13 @@
 "use strict";
-
-const rpcUrl = "https://api.avax-test.network/ext/bc/C/rpc"
-
+import { web3 } from './index'
+import { approve } from "./utils/approve"
+import Tx from 'ethereumjs-tx';
 
 // account
 const wallets = require('./../pvts/wallets_list.json')
 const wallet = wallets[0].address;
 const pvt = wallets[0].pvt;
 
-const Tx = require('ethereumjs-tx');
-const Web3 = require('web3')
-const web3 = new Web3(rpcUrl)
 
 const abi = require('./abi/insurance_pool.json');
 const erc20Abi = require('./abi/erc20.json');
@@ -32,42 +29,44 @@ const usdcContract = new web3.eth.Contract(
 const gao = async (wallet, pvt) => {
 
 	try {
-		// 先进行代币授权
-		console.log("先进行代币授权")
-		const usePvt = Buffer.from(pvt, 'hex');
+		// // 先进行代币授权
+		// console.log("先进行代币授权")
+		// const usePvt = Buffer.from(pvt, 'hex');
 
-		// 获取代币个数
-		const amount = await usdcContract.methods.balanceOf(wallet).call()
+		// // 获取代币个数
+		// const amount = await usdcContract.methods.balanceOf(wallet).call()
 		
-		// 授权
-		const data = usdcContract.methods.approve(contractAddress, amount).encodeABI();
-		let gasLimit = await usdcContract.methods.approve(contractAddress, amount).estimateGas({from: wallet})
-		const txCount = await web3.eth.getTransactionCount(wallet);
-		const txObj1 = {
-			chainId: 43113,
-			nonce: web3.utils.toHex(txCount),
-			gasLimit: web3.utils.toHex(gasLimit * 2),
-			gasPrice: web3.utils.toHex(web3.utils.toWei('55', 'gwei')),
-			to: contractAddress,
-			data: data
-		}
+		// // 授权
+		// const data = usdcContract.methods.approve(contractAddress, amount).encodeABI();
+		// let gasLimit = await usdcContract.methods.approve(contractAddress, amount).estimateGas({from: wallet})
+		// const txCount = await web3.eth.getTransactionCount(wallet);
+		// const txObj1 = {
+		// 	chainId: 43113,
+		// 	nonce: web3.utils.toHex(txCount),
+		// 	gasLimit: web3.utils.toHex(gasLimit * 2),
+		// 	gasPrice: web3.utils.toHex(web3.utils.toWei('55', 'gwei')),
+		// 	to: contractAddress,
+		// 	data: data
+		// }
 
-		/// sign the transaction
-		const tx = new Tx(txObj1);
-		tx.sign(usePvt);
-		const serializedTx = tx.serialize()
-		const raw = '0x' + serializedTx.toString('hex')
+		// /// sign the transaction
+		// const tx = new Tx(txObj1);
+		// tx.sign(usePvt);
+		// const serializedTx = tx.serialize()
+		// const raw = '0x' + serializedTx.toString('hex')
 
 
-		/// broodcast
-		const txHash = await web3.eth.sendSignedTransaction(raw)
+		// /// broodcast
+		// const txHash = await web3.eth.sendSignedTransaction(raw)
 
-		console.log(`[ACCOUNT] ${wallet}`)
-		console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash}`)
+		// console.log(`[ACCOUNT] ${wallet}`)
+		// console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash}`)
+		const usePvt = Buffer.from(pvt, 'hex');
+		const amount = await approve(usdcAddress, contractAddress, wallet, pvt);
 
 		// 质押
 		console.log("进行质押操作")
-		const data2 = contract.methods.stake(wallet, amount).encodeABI();
+		const data2 = contract.methods.stake(wallet, amount / 2).encodeABI();
 		let gasLimit2 = await contract.methods.stake(wallet, amount).estimateGas({from: wallet});
 		const txCount2 = await web3.eth.getTransactionCount(wallet);
 		const txObj2 = {

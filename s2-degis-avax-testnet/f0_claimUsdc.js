@@ -3,8 +3,8 @@ const rpcUrl = "https://api.avax-test.network/ext/bc/C/rpc"
 
 // account
 const wallets = require('./../pvts/wallets_list.json')
-const wallet = wallets[0].address;
-const pvt = wallets[0].pvt;
+const wallet = wallets[1].address;
+const pvt = wallets[1].pvt;
 
 const Tx = require('ethereumjs-tx');
 const Web3 = require('web3')
@@ -30,7 +30,7 @@ const contract = new web3.eth.Contract(
 //     "output": "0x"
 //   }
 
-let amount = new web3.utils.toBN("0x121e19e0c9bab2400000");
+let amount = new web3.utils.toBN("0x152d02c7e14af6000000");
 const data = contract.methods.mint(wallet, amount).encodeABI();
 
 console.log(wallet, amount.toString())
@@ -42,43 +42,44 @@ console.log(wallet, amount.toString())
 
 gao(wallet, pvt);
 
-function gao(wallet, pvt) {
-    web3.eth.getTransactionCount(wallet, (err, txCount) => {
-        //10828000000000000basetcro
-        //108280000000000000basetcro
-        //create transaction object
-        const usePvt = Buffer.from(pvt, 'hex');
-        contract.methods.mint(wallet, amount).estimateGas({from: wallet}).then(gasLimit => {
-    
-            console.log(gasLimit)
-    
-            const txObject = {
-                chainId: 43113,
-                nonce: web3.utils.toHex(txCount),
-                gasLimit: web3.utils.toHex(gasLimit),
-                gasPrice: web3.utils.toHex(web3.utils.toWei('50', 'gwei')),
-                to: contractAddress,
-                data: data
-            }
-        
-            //sign the transaction
-            const tx = new Tx(txObject);
-            tx.sign(usePvt);
-            const serializedTx = tx.serialize()
-            const raw = '0x' + serializedTx.toString('hex')
-        
-            // Broodcast the transaction
-            web3.eth.sendSignedTransaction(raw, (err, txHash) => {
-                if (err) {
-                    console.log(`[Failured] ${wallet}`);
-                    console.log(err)
-                } else {
-                    console.log(`[ACCOUNT] ${wallet}`)
-                    console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash}`)
-                }
-            }) 
-        })
-    })
+async function gao(wallet, pvt) {
+    const txCount = await web3.eth.getTransactionCount(wallet)
+    //10828000000000000basetcro
+    //108280000000000000basetcro
+    //create transaction object
+    const usePvt = Buffer.from(pvt, 'hex');
+    const gasLimit = await contract.methods.mint(wallet, amount).estimateGas({from: wallet})
+
+    console.log(gasLimit)
+
+    const txObject = {
+        chainId: 43113,
+        nonce: web3.utils.toHex(txCount),
+        gasLimit: web3.utils.toHex(gasLimit),
+        gasPrice: web3.utils.toHex(web3.utils.toWei('50', 'gwei')),
+        to: contractAddress,
+        data: data
+    }
+
+    //sign the transaction
+    const tx = new Tx(txObject);
+    tx.sign(usePvt);
+    const serializedTx = tx.serialize()
+    const raw = '0x' + serializedTx.toString('hex')
+
+    // Broodcast the transaction
+    const txhash = await web3.eth.sendSignedTransaction(raw)
+    console.log(txhash.blockHash);
+    console.log(`https://testnet.avascan.info/blockchain/c/tx/${txhash.blockHash}`)
+    // web3.eth.sendSignedTransaction(raw, (err, txHash) => {
+    //     if (err) {
+    //         console.log(`[Failured] ${wallet}`);
+    //         console.log(err)
+    //     } else {
+    //         console.log(`[ACCOUNT] ${wallet}`)
+    //         console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash}`)
+    //     }
+    // }) 
 }
 
 

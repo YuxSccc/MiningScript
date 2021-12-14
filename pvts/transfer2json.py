@@ -17,9 +17,11 @@ sheet = wb_obj.active
 for i in range(2, 1003):
     address = sheet[f'A{i}'].value
     pvt = sheet[f'B{i}'].value
+    if address is None or pvt is None:
+        continue
     user = {
         "address": address,
-        "pvt": pvt,
+        "pvt": pvt[2:] if pvt.startswith("0x") else pvt,
     }
     fo_cache.append(user)
     
