@@ -27,7 +27,7 @@ const gao = async (wallet, pvt) => {
     const txHash = await web3.eth.sendSignedTransaction(raw);
 
     console.log(`[ACCOUNT] ${wallet}`)
-		console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash.blockHash}`)
+		console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash.transactionHash}`)
 
 
     // 后面是 sell 操作
@@ -53,7 +53,7 @@ const gao = async (wallet, pvt) => {
 		console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash2.blockHash}`)
 
   } catch (error) {
-    console.log("failured")
+    console.log("failured in f4")
     console.log(error)
   }
 }

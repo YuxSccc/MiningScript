@@ -1,12 +1,7 @@
 "use strict";
-import { web3 } from './index'
+import { web3, wallet, wallets, pvt } from './index';
 import { approve } from "./utils/approve"
 import Tx from 'ethereumjs-tx';
-
-// account
-const wallets = require('./../pvts/wallets_list.json')
-const wallet = wallets[0].address;
-const pvt = wallets[0].pvt;
 
 
 const abi = require('./abi/insurance_pool.json');
@@ -62,11 +57,13 @@ const gao = async (wallet, pvt) => {
 		// console.log(`[ACCOUNT] ${wallet}`)
 		// console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash}`)
 		const usePvt = Buffer.from(pvt, 'hex');
-		const amount = await approve(usdcAddress, contractAddress, wallet, pvt);
+		await approve(usdcAddress, contractAddress, wallet, pvt);
 
 		// 质押
 		console.log("进行质押操作")
-		const data2 = contract.methods.stake(wallet, amount / 2).encodeABI();
+		let amount = new web3.utils.toBN("0x10f0cf064dd59200000")
+		console.log(amount.toString())
+		const data2 = contract.methods.stake(wallet, amount).encodeABI();
 		let gasLimit2 = await contract.methods.stake(wallet, amount).estimateGas({from: wallet});
 		const txCount2 = await web3.eth.getTransactionCount(wallet);
 		const txObj2 = {
@@ -88,10 +85,10 @@ const gao = async (wallet, pvt) => {
 		const txHash2 = await web3.eth.sendSignedTransaction(raw2)
 
 		console.log(`[ACCOUNT] ${wallet}`)
-		console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash2}`)
+		console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash2.transactionHash}`)
 
 	} catch (error) {
-		console.log("failured")
+		console.log("failured in f2")
 		console.log(error)
 	}
 	

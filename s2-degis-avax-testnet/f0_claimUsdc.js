@@ -1,14 +1,10 @@
 
-const rpcUrl = "https://api.avax-test.network/ext/bc/C/rpc"
+"use strict";
 
-// account
-const wallets = require('./../pvts/wallets_list.json')
-const wallet = wallets[1].address;
-const pvt = wallets[1].pvt;
-
-const Tx = require('ethereumjs-tx');
-const Web3 = require('web3')
-const web3 = new Web3(rpcUrl)
+import { web3, wallet, wallets, pvt } from './index';
+import { createTx } from './utils/createTx';
+import Tx from 'ethereumjs-tx';
+import { approve } from './utils/approve';
 
 const abi = require('./abi/mock_usd.json');
 
@@ -55,7 +51,7 @@ async function gao(wallet, pvt) {
     const txObject = {
         chainId: 43113,
         nonce: web3.utils.toHex(txCount),
-        gasLimit: web3.utils.toHex(gasLimit),
+        gasLimit: web3.utils.toHex(gasLimit * 2),
         gasPrice: web3.utils.toHex(web3.utils.toWei('50', 'gwei')),
         to: contractAddress,
         data: data
@@ -68,9 +64,9 @@ async function gao(wallet, pvt) {
     const raw = '0x' + serializedTx.toString('hex')
 
     // Broodcast the transaction
-    const txhash = await web3.eth.sendSignedTransaction(raw)
-    console.log(txhash.blockHash);
-    console.log(`https://testnet.avascan.info/blockchain/c/tx/${txhash.blockHash}`)
+    const txHash = await web3.eth.sendSignedTransaction(raw)
+    console.log(txHash.transactionHash);
+    console.log(`https://testnet.avascan.info/blockchain/c/tx/${txHash.transactionHash}`)
     // web3.eth.sendSignedTransaction(raw, (err, txHash) => {
     //     if (err) {
     //         console.log(`[Failured] ${wallet}`);

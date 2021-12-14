@@ -42,7 +42,7 @@ export async function approve(erc20, contract, wallet, pvt) {
     const txHash = await web3.eth.sendSignedTransaction(raw)
 
     console.log(`[ACCOUNT] ${wallet}`)
-    console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash.blockHash}`)
+    console.log(`[OK] SCAN URL: https://testnet.avascan.info/blockchain/c/tx/${txHash.transactionHash}`)
 
     return amount;
   } catch (error) {
