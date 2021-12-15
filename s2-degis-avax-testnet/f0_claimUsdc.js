@@ -2,12 +2,15 @@
 "use strict";
 
 import { web3 } from './index';
-// import {wallet, wallets, pvt} from './index';
+import { wallets, wallet, pvt } from './index';
 import { createTx } from './utils/createTx';
 import Tx from 'ethereumjs-tx';
 import { approve } from './utils/approve';
 
+// const wallet = wallets[1].address;
+// const pvt = wallets[1].address;
 
+console.log(wallet)
 
 const abi = require('./abi/mock_usd.json');
 
