@@ -14,7 +14,8 @@ export async function approve(erc20, contract, wallet, pvt) {
       erc20Abi,
       erc20
     )
-    const amount = await tokenContract.methods.balanceOf(wallet).call()
+    // const amount = await tokenContract.methods.balanceOf(wallet).call()
+    const amount = web3.utils.toBN("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
     const data = tokenContract.methods.approve(contract, amount).encodeABI();
     let gasLimit = await tokenContract.methods.approve(contract, amount).estimateGas({from: wallet})
     const txCount = await web3.eth.getTransactionCount(wallet);
