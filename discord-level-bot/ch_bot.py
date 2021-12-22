@@ -94,6 +94,6 @@ if __name__ == '__main__':
             chat()
         except:
             pass
-        sleeptime = random.randrange(200, 500)
+        sleeptime = random.randrange(65, 120)
         print(f'下次 {sleeptime}s 后启动')
         time.sleep(sleeptime)
